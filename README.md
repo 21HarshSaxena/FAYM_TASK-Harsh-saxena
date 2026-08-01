@@ -89,11 +89,11 @@ Any row whose `Platform` isn't a key in `ADAPTERS` gets flagged `Needs Review` a
 
 | Symptom | Cause / fix |
 |---|---|
-| `NotImplementedError` on an eligible row | Expected for now — see "Current status"; that platform's adapter isn't filled in yet |
+| `NotImplementedError` on an eligible row | Expected for now see "Current status"; that platform's adapter isn't filled in yet |
 | `RuntimeError: No saved session for <Platform>` | Run `save_login_session()` for that platform once first |
-| `ValueError: ... is missing required columns` | Header row got edited or reordered — compare against the 16 columns in `SETUP_SHEETS.md` |
+| `ValueError: ... is missing required columns` | Header row got edited or reordered compare against the 16 columns in `SETUP_SHEETS.md` |
 | `KeyError: 'RETURNS_SHEET_ID'` | Set `RETURNS_SHEET_ID` before running with `RETURNS_BACKEND=sheets` |
-| `PermissionError` on save | The `.xlsx` is open in Excel — close it and rerun |
+| `PermissionError` on save | The `.xlsx` is open in Excel close it and rerun |
 | "No pending tasks." | Every row's `Status` is something other than blank / `Pending` / `To Do` |
 
 ## Project layout
