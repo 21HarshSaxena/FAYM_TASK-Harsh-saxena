@@ -1,15 +1,15 @@
 # Multi-Item Return Automation Agent
 
-Reads pending return line items from a spreadsheet a local Excel file or a live Google Sheet, same interface either way checks each one's return eligibility, and (once the platform adapters are filled in) drives the Amazon/Flipkart return flow through a real, human-supervised Chrome session, writing the outcome back into the row it came from.
+Reads pending return line items from a spreadsheet a local Excel file or a live Google Sheet, same interface either way checks each one's return eligibility, and (once the platform adapters are filled in) drives the Amazon/Flipkart return flow through a real, human supervised Chrome session, writing the outcome back into the row it came from.
 
-Built for the Faym assignment. The 16-column schema, the `Status` / `Return Status` split, and the outcome vocabulary (`Placed`, `Already Cancelled & Refunded`, `Out of window`, `Not yet delivered`, `Support Needed`, `Failed`) all come from the real "Faym Status Test Orders" sheet, not guessed from the brief.
+Built for the Faym assignment. The 16 column schema, the `Status` / `Return Status` split, and the outcome vocabulary (`Placed`, `Already Cancelled & Refunded`, `Out of window`, `Not yet delivered`, `Support Needed`, `Failed`) all come from the real "Faym Status Test Orders" sheet, not guessed from the brief.
 
 ## Current status
 
 **Working and tested today:** the task queue, the eligibility check, and both storage backends all covered by `test_skeleton.py`, with no live site, no browser, and no credentials involved.
 
 **Not built yet:** the actual clicking. `AmazonAdapter` and `FlipkartAdapter`'s `detect_flow_type()` and `initiate_return()` are intentionally `NotImplementedError` stubs until real DOM selectors go in for each site. In practice:
-- A row whose eligibility alone resolves it — window's closed, delivery date's blank, or the dates just don't parse is handled correctly end to end, and the browser never opens.
+- A row whose eligibility alone resolves it window's closed, delivery date's blank, or the dates just don't parse is handled correctly end to end, and the browser never opens.
 - A row that's genuinely eligible reaches the adapter and raises `NotImplementedError`. That's the one piece of work left before a live run can place a real return.
 
 ## How it works
@@ -25,8 +25,8 @@ Built for the Faym assignment. The 16-column schema, the `Status` / `Return Stat
 
 `ExcelTaskQueue` and `GoogleSheetTaskQueue` (`sheets_backend.py`) both implement the same four-method `TaskQueue` interface, so nothing else in the agent needs to know which one it's holding. They differ in one important way:
 
-- **Excel** `write_back()` updates the in-memory table; the file itself is only written once, in `save()`, after every item in the run has been processed.
-- **Google Sheets** `write_back()` fires one batched API call *per item*, immediately, so `save()` is a no-op. A crash mid-run only risks the one row actively being worked on, not the returns already placed earlier in that same run worth having for automation that touches real refunds.
+- **Excel** `write_back()` updates the in memory table, the file itself is only written once, in `save()`, after every item in the run has been processed.
+- **Google Sheets** `write_back()` fires one batched API call *per item*, immediately, so `save()` is a no op. A crash mid run only risks the one row actively being worked on, not the returns already placed earlier in that same run worth having for automation that touches real refunds.
 
 Setting up your own live sheet to test against, so nothing touches the real one, is a 10 minute one time thing the full click by click version is in `SETUP_SHEETS.md`.
 
@@ -49,7 +49,7 @@ python -m playwright install chromium
 python test_skeleton.py
 ```
 
-This is the real "does this work" check today — there's no `--dry-run` flag on the agent itself yet. It builds a fixture Excel file on the fly and runs all 4 rows through the full eligibility + outcome state machine with a `MockAdapter` standing in for a platform, then repeats the equivalent checks against a mocked Google Sheet no live API call either way. `ALL TESTS PASSED` at the end means the queue, the eligibility logic, and both backends are behaving correctly.
+This is the real "does this work" check today there's no `--dry-run` flag on the agent itself yet. It builds a fixture Excel file on the fly and runs all 4 rows through the full eligibility + outcome state machine with a `MockAdapter` standing in for a platform, then repeats the equivalent checks against a mocked Google Sheet no live API call either way. `ALL TESTS PASSED` at the end means the queue, the eligibility logic, and both backends are behaving correctly.
 
 ## Running it for real
 
@@ -89,7 +89,7 @@ Any row whose `Platform` isn't a key in `ADAPTERS` gets flagged `Needs Review` a
 
 | Symptom | Cause / fix |
 |---|---|
-| `NotImplementedError` on an eligible row | Expected for now see "Current status"; that platform's adapter isn't filled in yet |
+| `NotImplementedError` on an eligible row | Expected for now see "Current status", that platform's adapter isn't filled in yet |
 | `RuntimeError: No saved session for <Platform>` | Run `save_login_session()` for that platform once first |
 | `ValueError: ... is missing required columns` | Header row got edited or reordered compare against the 16 columns in `SETUP_SHEETS.md` |
 | `KeyError: 'RETURNS_SHEET_ID'` | Set `RETURNS_SHEET_ID` before running with `RETURNS_BACKEND=sheets` |
@@ -101,9 +101,9 @@ Any row whose `Platform` isn't a key in `ADAPTERS` gets flagged `Needs Review` a
 ```
 .
 ├── agent_skeleton.py     # task queue, eligibility engine, Excel backend, adapter interface + stubs
-├── sheets_backend.py     # Google Sheets backend — drop-in replacement for ExcelTaskQueue
+├── sheets_backend.py     # Google Sheets backend drop in replacement for ExcelTaskQueue
 ├── test_skeleton.py      # fixture-driven tests, both backends, no live API or browser needed
-├── SETUP_SHEETS.md       # click-by-click guide to connecting a live Google Sheet
+├── SETUP_SHEETS.md       # click by click guide to connecting a live Google Sheet
 ├── requirements.txt
 └── .gitignore
 ```
