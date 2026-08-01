@@ -1,6 +1,6 @@
 # Multi-Item Return Automation Agent
 
-Reads pending return line items from a spreadsheet — a local Excel file or a live Google Sheet, same interface either way — checks each one's return eligibility, and (once the platform adapters are filled in) drives the Amazon/Flipkart return flow through a real, human-supervised Chrome session, writing the outcome back into the row it came from.
+Reads pending return line items from a spreadsheet a local Excel file or a live Google Sheet, same interface either way — checks each one's return eligibility, and (once the platform adapters are filled in) drives the Amazon/Flipkart return flow through a real, human-supervised Chrome session, writing the outcome back into the row it came from.
 
 Built for the Faym assignment. The 16-column schema, the `Status` / `Return Status` split, and the outcome vocabulary (`Placed`, `Already Cancelled & Refunded`, `Out of window`, `Not yet delivered`, `Support Needed`, `Failed`) all come from the real "Faym Status Test Orders" sheet, not guessed from the brief.
 
